@@ -6,11 +6,12 @@ using namespace nix;
 
 class ChildProc {
   public:
-    ChildProc(Value *v);
-    void eval(const Strings &path);
+    ChildProc(Value *v, EvalState *state);
+    void eval(const Strings &path, std::shared_ptr<ChildProc> self ,EvalState &state, Value &value);
   private:
     Pipe parentToChild, childToParent;
     FdSink out;
+    FdSource in;
     Value *v;
 };
 
