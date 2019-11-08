@@ -1,1 +1,1 @@
-builtins.importNative ./fork.so "nixFork" { path = ./fork.hh; }
+with import <nixpkgs> {}; builtins.importNative ./fork.so "nixFork" pkgs

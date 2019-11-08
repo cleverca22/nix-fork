@@ -6,9 +6,10 @@ using namespace nix;
 
 class ChildProc {
   public:
-    ChildProc(Value *v, EvalState *state);
+    ChildProc(Value *v, EvalState &state);
     void eval(const Strings &path, std::shared_ptr<ChildProc> self ,EvalState &state, Value &value);
   private:
+    uint16_t pid;
     Pipe parentToChild, childToParent;
     FdSink out;
     FdSource in;
@@ -16,10 +17,14 @@ class ChildProc {
 };
 
 struct ExprRemoteValue : public Expr {
-  ExprRemoteValue(std::shared_ptr<ChildProc> child, Strings path);
-  ExprRemoteValue(std::shared_ptr<ChildProc> child, const std::string path);
+  ExprRemoteValue(Value *, Strings path);
+  ExprRemoteValue(Value *, const std::string path);
+  ExprRemoteValue(std::shared_ptr<ChildProc> self, Strings path);
   virtual void eval(EvalState & state, Env & env, Value & v);
 private:
   std::shared_ptr<ChildProc> child;
+  bool withChild;
+  Value *v;
   Strings path;
+  int type;
 };
